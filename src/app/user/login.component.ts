@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from './auth.service';
 //NGRX
 import { Store, select } from '@ngrx/store';
+import * as fromUser from './store/user.reducer';
 
 @Component({
   templateUrl: './login.component.html',
@@ -23,10 +24,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO: Unsbscribe
-    this.store.pipe(select('user')).subscribe(user => {
-      if (user) {
-        this.maskUserName = user.maskUserName;
-      }
+    this.store.pipe(select(fromUser.getMaskUserName)).subscribe(maskUsername => {
+      this.maskUserName = maskUsername;
     });
   }
 
