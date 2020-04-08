@@ -11,6 +11,7 @@ import { NumberValidators } from '../../shared/number.validator';
 import { Store, select } from '@ngrx/store';
 import * as fromProduct from './../store/product.reducer';
 import * as productActions from './../store/product.actions';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'pm-product-edit',
@@ -24,6 +25,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   product: Product | null;
   sub: Subscription;
+
+  activeComponent = true;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -76,13 +79,18 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       value => this.displayMessage = this.genericValidator.processMessages(this.productForm)
     );
 
-    this.sub = this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(currentProduct => {
+    this.store.pipe(
+      takeWhile(() => this.activeComponent),
+      select(fromProduct.getCurrentProduct)
+    )
+    .subscribe(currentProduct => {
       this.displayProduct(currentProduct);
     });
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    // this.sub.unsubscribe();
+    this.activeComponent = false;
   }
 
   // Also validate on blur

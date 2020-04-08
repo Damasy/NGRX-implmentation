@@ -8,6 +8,7 @@ import { ProductService } from "../product.service";
 import { Store, select } from "@ngrx/store";
 import * as fromProduct from './../store/product.reducer';
 import * as productActions from './../store/product.actions';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: "pm-product-list",
@@ -27,6 +28,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   sub: Subscription;
 
+  activeComponent = true;
   constructor(
     private productService: ProductService,
     private store: Store<fromProduct.State>
@@ -46,8 +48,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     // });
 
     // TODO: unsbscripe
-    this.sub = this.store
+    this.store
     .pipe(
+      takeWhile(() => this.activeComponent),
       select(
         fromProduct.getShowProductCode
       )
@@ -55,8 +58,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     .subscribe(showProductCode => {
       this.displayCode = showProductCode;
     });
-    this.sub = this.store
+
+    this.store
     .pipe(
+      takeWhile(() => this.activeComponent),
       select(
         fromProduct.getCurrentProduct
       )
@@ -67,7 +72,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    // this.sub.unsubscribe();
+    this.activeComponent = false;
   }
 
   checkChanged(value: boolean): void {
