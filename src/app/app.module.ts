@@ -13,8 +13,10 @@ import { ShellComponent } from './home/shell.component';
 import { MenuComponent } from './home/menu.component';
 import { WelcomeComponent } from './home/welcome.component';
 import { PageNotFoundComponent } from './home/page-not-found.component';
+import { environment } from '../environments/environment';
 // NGRX
 import {StoreModule} from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 /* Feature Modules */
 import { UserModule } from './user/user.module';
@@ -28,7 +30,11 @@ import { EffectsModule } from '@ngrx/effects';
     UserModule,
     AppRoutingModule,
     StoreModule.forRoot({}),
-    EffectsModule.forRoot([])
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument(
+    { maxAge: 25, 
+      logOnly: environment.production 
+    })
   ],
   declarations: [
     AppComponent,
