@@ -1,8 +1,5 @@
 import { ProuctActions, ProductActionTypes } from './product.actions';
 import { Product } from './../product';
-import * as fromRoot from './../../state/app.state';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { stat } from 'fs';
 
 export interface ProductState {
   showProductCode: boolean;
@@ -16,49 +13,6 @@ const intitalState: ProductState = {
   currentProductId: null,
   products: [],
   error: ''
-}
-
-const intitalProduct = {
-  id: 0,
-  productName: '',
-  productCode: 'new',
-  description: '',
-  starRating: 0
-}
-
-const getProductFeatureState = createFeatureSelector<ProductState>('products');
-
-export const getShowProductCode = createSelector(
-  getProductFeatureState,
-  state => state.showProductCode
-);
-
-export const getCurrentProductId = createSelector(
-  getProductFeatureState,
-  state => state.currentProductId
-);
-
-export const getCurrentProduct = createSelector(
-  getProductFeatureState,
-  getCurrentProductId,
-  (state, currentProductId) => {
-    if (currentProductId === 0) return intitalProduct;
-    else return currentProductId ? state.products.find(p => p.id === currentProductId) : null;
-  }
-);
-
-export const getProducts = createSelector(
-  getProductFeatureState,
-  state => state.products
-);
-
-export const getError = createSelector(
-  getProductFeatureState,
-  state => state.error
-);
-
-export interface State extends fromRoot.State {
-  products: ProductState;
 }
 
 export function reducer(state = intitalState, action: ProuctActions): ProductState {
